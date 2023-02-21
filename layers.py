@@ -1,5 +1,4 @@
 from activations import Activation
-from costFunctions import MeanSquaredError
 import numpy as np
 
 class Layer:
