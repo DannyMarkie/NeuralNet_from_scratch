@@ -1,2 +1,2 @@
-# NeuralNet_from_scratch
+# Neural Network from scratch!
 Making a Neural Network from scratch using OOP
