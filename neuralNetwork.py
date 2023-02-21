@@ -1,11 +1,15 @@
 from layers import Layer, Flatten
+from optimizers import Optimizer
+from costFunctions import CostFunction
 
 class NeuralNetwork:
     def __init__(self, layers: Layer):
         self.layers = layers
         self.compiled = False
 
-    def compile(self, optimizer, costFunction):
+    def compile(self, optimizer: Optimizer, costFunction: CostFunction):
+        self.optimizer = optimizer
+        self.costfunction = costFunction
         self.set_input_sizes()
         self.init_params()
         
@@ -29,8 +33,13 @@ class NeuralNetwork:
             previousOutputShape = layer.size
 
     def init_params(self):
-        for layer in self.layers:
+        for index, layer in enumerate(self.layers):
             layer.init_params()
+            if index == (len(self.layers) - 1):
+                self.set_cost_function(layer=layer)
+
+    def set_cost_function(self, layer):
+        layer.activation.add_cost_function(self.costfunction)
 
     def summary(self):
         if not self.compiled:
@@ -38,3 +47,6 @@ class NeuralNetwork:
 
         for layer in self.layers:
             print(f'{layer}, input shape: {layer.inputShape}, Parameters: {layer.parameterCount}')
+
+    def gradient_descent(self):
+        pass

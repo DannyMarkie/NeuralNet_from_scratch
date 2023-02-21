@@ -1,7 +1,17 @@
 import numpy as np
+from costFunctions import CostFunction
 
 class Activation:
     def __init__(self) -> None:
+        pass
+
+    def run(self, Z):
+        pass
+
+    def deriv(self, Z):
+        pass
+
+    def add_cost_function(self):
         pass
 
 class ReLU(Activation):
@@ -12,8 +22,11 @@ class ReLU(Activation):
         return Z > 0
     
 class SoftMax(Activation):
+    def add_cost_function(self, costFunction: CostFunction):
+        self.costFunction = costFunction
+
     def run(self, Z):
-        pass
+        return (np.exp(Z) / sum(np.exp(Z)))
 
     def deriv(self, Z):
-        pass
+        return CostFunction.run()
