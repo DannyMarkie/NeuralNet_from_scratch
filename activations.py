@@ -1,5 +1,6 @@
 import numpy as np
 from costFunctions import CostFunction
+np.set_printoptions(suppress=True)
 
 class Activation:
     def __init__(self) -> None:
@@ -26,7 +27,8 @@ class SoftMax(Activation):
         self.costFunction = costFunction
 
     def run(self, Z):
-        return (np.exp(Z) / sum(np.exp(Z)))
+        A = np.exp(Z) / sum(np.exp(Z))
+        return A
 
-    def deriv(self, Z):
-        return CostFunction.run()
+    def deriv(self, Z, Y):
+        return self.costFunction.run(Y_pred=Z, Y_true=Y)

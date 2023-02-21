@@ -6,7 +6,7 @@ class CostFunction:
 
 class MeanSquaredError(CostFunction):
     def run(self, Y_pred, Y_true):
-        return np.square(Y_pred - Y_true)
+        return Y_pred - Y_true.T
 
 class CategoricalCrossEntropy(CostFunction):
     def __init__(self) -> None:
