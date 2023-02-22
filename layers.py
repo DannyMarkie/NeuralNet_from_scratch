@@ -62,10 +62,18 @@ class Dense(Layer):
         else: 
             deltaZ = prev_weights.T.dot(deltaZ) * self.activation.deriv(Z=self.Z)
         deltaWeights = 1 / sampleSize * deltaZ.dot(self.input.T)
-        deltaBiases = 1 / sampleSize * np.sum(deltaZ)
+        # print(deltaZ.shape)
+        # deltaBiases = 1 / sampleSize * np.sum(deltaZ)
+        print(deltaZ[0])
+        deltaBiases = np.sum(deltaZ[0])
         prev_weights = self.weights
+        # print(deltaWeights.shape)
+        # print(f'{self.size}: {deltaBiases.max(), deltaBiases.min()}')
         return deltaZ, deltaWeights, deltaBiases, prev_weights
     
     def update_params(self, deltaWeights, deltaBiases, learningRate):
+        # print(self.biases.shape, deltaBiases)
         self.weights = self.weights - (learningRate * deltaWeights)
         self.biases = self.biases - (learningRate * deltaBiases)
+        # print(self.biases.shape)
+        # print(f'{self.biases, (learningRate * deltaBiases), deltaBiases}')
