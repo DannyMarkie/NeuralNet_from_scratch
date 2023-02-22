@@ -53,6 +53,7 @@ class NeuralNetwork:
     def gradient_descent(self, X, Y, batch_size, iterations):
         sampleSize = X.shape[0]
         for iteration in range(iterations):
+            print(iteration+1)
             input = X
             for layer in self.layers:
                 input = layer.forward_propagation(input=input)
@@ -60,7 +61,7 @@ class NeuralNetwork:
             self.layers = np.flip(self.layers)
             deltaZ = 1
             prev_weights = None
-            for layer in self.layers:
+            for index, layer in enumerate(self.layers):
                 if type(layer) == Flatten:
                     continue
                 deltaZ, deltaWeights, deltaBiases, prev_weights = layer.backward_propagation(sampleSize, deltaZ, Y, prev_weights)

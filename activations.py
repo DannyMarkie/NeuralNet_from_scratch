@@ -15,6 +15,13 @@ class Activation:
     def add_cost_function(self):
         pass
 
+class Tanh(Activation):
+    def run(self, Z):
+        return (np.exp(Z)-np.exp(-Z))/(np.exp(Z)+np.exp(-Z))
+    
+    def deriv(self, Z):
+        return 1 - np.square((np.exp(Z)-np.exp(-Z))/(np.exp(Z)+np.exp(-Z)))
+
 class ReLU(Activation):
     def run(self, Z):
         return np.maximum(Z, 0)
@@ -27,12 +34,7 @@ class SoftMax(Activation):
         self.costFunction = costFunction
 
     def run(self, Z):
-        # Z = Z / Z.max()
-        # print(Z.max())
-        # print(np.exp(Z).max(), np.sum(np.exp(Z)).max())
-        # print(np.sum(np.exp(Z)).shape)
-        A = np.exp(Z) / np.sum(np.exp(Z))
-        # print(A.max())
+        A = np.exp(Z) / sum(np.exp(Z))
         return A
 
     def deriv(self, Z, Y):

@@ -6,7 +6,9 @@ class CostFunction:
 
 class MeanError(CostFunction):
     def run(self, Y_pred, Y_true):
-        return Y_pred - Y_true.T
+        # error = np.square((Y_pred - Y_true.T))
+        error = (Y_pred - Y_true.T)
+        return error
 
 class CategoricalCrossEntropy(CostFunction):
     def run(self, Y_pred, Y_true):
