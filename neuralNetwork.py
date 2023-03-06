@@ -1,5 +1,5 @@
 from layers import Layer, Flatten
-from optimizers import Optimizer
+from optimizers import Optimizer, Adam
 from costFunctions import CostFunction
 import numpy as np
 
@@ -35,7 +35,7 @@ class NeuralNetwork:
 
     def init_params(self):
         for index, layer in enumerate(self.layers):
-            layer.init_params()
+            layer.init_params(optimizer = Adam())
             if index == (len(self.layers) - 1):
                 self.set_cost_function(layer=layer)
                 layer.isLast = True
@@ -65,7 +65,7 @@ class NeuralNetwork:
                 if type(layer) == Flatten:
                     continue
                 deltaZ, deltaWeights, deltaBiases, prev_weights = layer.backward_propagation(sampleSize, deltaZ, Y, prev_weights)
-                layer.update_params(deltaWeights=deltaWeights, deltaBiases=deltaBiases, learningRate=self.learningRate)
+                layer.update_params(deltaWeights=deltaWeights, deltaBiases=deltaBiases, learningRate=self.learningRate, epoch=iteration)
             
             self.layers = np.flip(self.layers)
 

@@ -7,7 +7,7 @@ class Layer:
         self.size = size
         self.activation = activation
 
-    def init_params(self):
+    def init_params(self, optimizer):
         pass
 
     def forward_propagation(self, input):
@@ -40,9 +40,12 @@ class Dense(Layer):
     def __str__(self) -> str:
         return f"Dense Layer"
     
-    def init_params(self, isLast=False):
+    def init_params(self, optimizer, isLast=False):
         self.weights = np.random.rand(self.size, self.inputShape) - 0.5
         self.biases = np.random.rand(self.size, 1) - 0.5
+        self.moment1 = 0
+        self.moment2 = 0
+        self.optimizer = optimizer
         self.parameterCount = (len(self.weights) * len(self.weights[0])) + len(self.biases) * len(self.biases[0])
         self.isLast = isLast
 
@@ -58,14 +61,21 @@ class Dense(Layer):
     
     def backward_propagation(self, sampleSize, deltaZ, Y, prev_weights):
         if self.isLast:
+            # deltaZ = self.weights.T.dot(self.activation.deriv(Z=self.next, Y=Y))
             deltaZ = self.activation.deriv(Z=self.next, Y=Y)
+            # print(deltaZ)
+            # print(np.sum(deltaZ) / sampleSize)
         else: 
             deltaZ = prev_weights.T.dot(deltaZ) * self.activation.deriv(Z=self.Z)
+            # print(np.sum(deltaZ) / sampleSize)
+            # print(np.sum(deltaZ))
         deltaWeights = self.input.dot((self.next * deltaZ).T).T / sampleSize
         deltaBiases = np.sum(deltaZ) / sampleSize
+        print(deltaBiases)
         prev_weights = self.weights
         return deltaZ, deltaWeights, deltaBiases, prev_weights
     
-    def update_params(self, deltaWeights, deltaBiases, learningRate):
-        self.weights = self.weights - (learningRate * deltaWeights)
-        self.biases = self.biases - (learningRate * deltaBiases)
+    def update_params(self, deltaWeights, deltaBiases, learningRate, epoch):
+        # self.weights = self.weights - (learningRate * deltaWeights)
+        # self.biases = self.biases - (learningRate * deltaBiases)
+        self.weights, self.biases = self.optimizer.update_params(self.weights, self.biases, deltaWeights, deltaBiases, epoch)
