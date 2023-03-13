@@ -41,8 +41,10 @@ class Dense(Layer):
         return f"Dense Layer"
     
     def init_params(self, optimizer, isLast=False):
-        self.weights = np.random.rand(self.size, self.inputShape) - 0.5
-        self.biases = np.random.rand(self.size, 1) - 0.5
+        # self.weights = np.random.rand(self.size, self.inputShape) - 0.5
+        # self.biases = np.random.rand(self.size, 1) - 0.5
+        self.weights = np.random.normal(0.0, pow(self.size, -0.5), (self.size, self.inputShape))
+        self.biases = np.random.normal(0.0, pow(self.size, -0.5), (self.size, 1))
         self.moment1 = 0
         self.moment2 = 0
         self.optimizer = optimizer
@@ -63,19 +65,27 @@ class Dense(Layer):
         if self.isLast:
             # deltaZ = self.weights.T.dot(self.activation.deriv(Z=self.next, Y=Y))
             deltaZ = self.activation.deriv(Z=self.next, Y=Y)
-            # print(deltaZ)
+            # print(np.sum(deltaZ))
+            # print(deltaZ.max())
             # print(np.sum(deltaZ) / sampleSize)
         else: 
             deltaZ = prev_weights.T.dot(deltaZ) * self.activation.deriv(Z=self.Z)
+            # deltaZ = prev_weights.T.dot(deltaZ)
             # print(np.sum(deltaZ) / sampleSize)
             # print(np.sum(deltaZ))
-        deltaWeights = self.input.dot((self.next * deltaZ).T).T / sampleSize
+        deltaWeights = 1 / sampleSize * self.input.dot((self.next * deltaZ * (1.0 - self.next)).T).T
+        # print(self.input.max())
+        # deltaWeights = np.dot((deltaZ * self.next * (1.0 - self.next)), self.input.T) / sampleSize
+        # print(deltaWeights)
+        # print(deltaZ.shape)
         deltaBiases = np.sum(deltaZ) / sampleSize
-        print(deltaBiases)
+        # deltaBiases = np.mean(deltaZ, axis=1).reshape(deltaZ.shape[0], 1)
+        # deltaBiases = deltaZ
+        # print(np.mean(deltaZ, axis=1).shape)
         prev_weights = self.weights
         return deltaZ, deltaWeights, deltaBiases, prev_weights
     
     def update_params(self, deltaWeights, deltaBiases, learningRate, epoch):
-        # self.weights = self.weights - (learningRate * deltaWeights)
-        # self.biases = self.biases - (learningRate * deltaBiases)
-        self.weights, self.biases = self.optimizer.update_params(self.weights, self.biases, deltaWeights, deltaBiases, epoch)
+        self.weights = self.weights + (learningRate * deltaWeights)
+        self.biases = self.biases - (learningRate * deltaBiases)
+        # self.weights, self.biases = self.optimizer.update_params(self.weights, self.biases, deltaWeights, deltaBiases, epoch)

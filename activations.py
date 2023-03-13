@@ -34,7 +34,9 @@ class SoftMax(Activation):
         self.costFunction = costFunction
 
     def run(self, Z):
+        # print(sum(np.exp(Z)))
         A = np.exp(Z) / sum(np.exp(Z))
+        # print(A.max())
         return A
 
     def deriv(self, Z, Y):

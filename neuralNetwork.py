@@ -9,7 +9,7 @@ class NeuralNetwork:
         self.compiled = False
 
     def compile(self, optimizer: Optimizer, costFunction: CostFunction):
-        self.learningRate = 0.75
+        self.learningRate = 0.3
         self.optimizer = optimizer
         self.costfunction = costFunction
         self.set_input_sizes()

@@ -19,15 +19,14 @@ class Adam(Optimizer):
         self.m_biases = self.beta1 * self.m_biases + (1 - self.beta1) * delta_biases
 
         self.v_weights = self.beta2 * self.v_weights + (1 - self.beta2) * (delta_weights**2)
-        self.v_biases = self.beta2 * self.v_biases + (1 - self.beta2) * (delta_biases)
+        self.v_biases = self.beta2 * self.v_biases + (1 - self.beta2) * (delta_biases**2)
 
         corrected_m_weights = self.m_weights / (1 - self.beta2 ** epoch)
         corrected_m_biases = self.m_biases / (1 - self.beta2 ** epoch)
         corrected_v_weights = self.v_weights / (1 - self.beta2 ** epoch)
         corrected_v_biases = self.v_biases / (1 - self.beta2 ** epoch)
 
-        # print(corrected_v_biases)
-
-        weights = weights - self.learning_rate * (corrected_m_weights / (np.sqrt(corrected_v_weights) + self.epsilon))
-        biases = biases - self.learning_rate * (corrected_m_biases / (np.sqrt(corrected_v_biases) + self.epsilon))
-        return weights, biases
+        weights = weights + self.learning_rate * (corrected_m_weights / (np.sqrt(corrected_v_weights) + self.epsilon))
+        # biases = biases - self.learning_rate * (corrected_m_biases / (np.sqrt(corrected_v_biases) + self.epsilon))
+        # return weights, biases
+        return weights, 0
